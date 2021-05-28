@@ -2,6 +2,7 @@ import * as React from 'react';
 import {View, TouchableOpacity, Text, TextInput, StyleSheet, Dimensions} from 'react-native';
 import {Header} from 'react-native-elements';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
+import Note from './note';
 
 let w = Dimensions.get('window').width;
 
@@ -14,20 +15,34 @@ export default class MainScreen extends React.Component {
         };
     }
 
+    deleteNote=(key)=>{
+        this.state.allnotes.splice(key, 1);
+        this.setState({allnotes:this.state.allnotes})
+    }
+
+    submitNote=()=>{
+        if(this.state.note) {
+            var note = this.state.note;
+            this.state.allnotes.push({notebody:this.state.note});
+            this.setState({note:this.state.note,allnotes:this.state.allnotes})
+        } else {
+            console.log("Loading");
+        }
+    }
+
     render(){
         return(
             <SafeAreaProvider>
                 <Header backgroundColor="#00A82D" centerComponent={{text:"NOTES", style:st.header}}></Header>
-                <TextInput style={st.textinput} multiline maxLength={1000000} onChangeText={(abc)=>{this.setState({note:abc})}}/>
-                <TouchableOpacity style={st.touchableopacity} onPress={()=>{
-                    let tempnote = this.state.note;
-                    this.setState({allnotes : tempnote})
-                }}>
+                <TextInput style={st.textinput} onChangeText={(abc)=>{this.setState({note:abc})}}/>
+                <TouchableOpacity style={st.touchableopacity} onPress={this.submitNote.bind(this)}>
                     <Text style={st.touchableopacitytext}>Submit</Text>
                 </TouchableOpacity>
-                {this.state.allnotes.map((data, index)=>(
-                    <Text>{this.state.allnotes[index]}</Text>
-                ))}
+                <View>
+                    {this.state.allnotes.map((val, key)=>(
+                        <Note val={val} key={key} touchableopacity={this.deleteNote(key)}/>
+                    ))}
+                </View>
             </SafeAreaProvider>
         )
     }
@@ -43,7 +58,7 @@ const st = StyleSheet.create({
 
     textinput: {
         borderWidth:3,
-        height:860,
+        height:40,
         width:w-20,
         marginLeft:10,
         marginTop:5,
