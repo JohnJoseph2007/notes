@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {View, TouchableOpacity, Text, TextInput, StyleSheet, Dimensions} from 'react-native';
-import {Header} from 'react-native-elements';
+import {Header, Card} from 'react-native-elements';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import Note from './note';
 
@@ -23,7 +23,7 @@ export default class MainScreen extends React.Component {
     submitNote=()=>{
         if(this.state.note) {
             var note = this.state.note;
-            this.state.allnotes.push({notebody:this.state.note});
+            this.state.allnotes.push({"notebody":this.state.note});
             this.setState({note:this.state.note,allnotes:this.state.allnotes})
         } else {
             console.log("Loading");
@@ -40,7 +40,9 @@ export default class MainScreen extends React.Component {
                 </TouchableOpacity>
                 <View>
                     {this.state.allnotes.map((val, key)=>(
-                        <Note val={val} key={key} touchableopacity={this.deleteNote(key)}/>
+                        <Card>
+                            <Note val={val} key={key} touchableopacity={()=>{this.deleteNote(key)}}/>
+                        </Card>
                     ))}
                 </View>
             </SafeAreaProvider>
